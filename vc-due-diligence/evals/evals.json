@@ -1,0 +1,23 @@
+{
+  "skill_name": "vc-due-diligence",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "Run full due diligence on Databricks",
+      "expected_output": "A comprehensive DD report covering company overview, funding history (multiple rounds from Andreessen Horowitz, etc.), SEC filings (if any Form D), team/leadership, competitive landscape (vs Snowflake, etc.), and a .docx report file. Should discover and use multiple Rube data sources.",
+      "files": []
+    },
+    {
+      "id": 2,
+      "prompt": "Quick look at the team behind Wiz — who are the founders and key execs?",
+      "expected_output": "A focused people-centric response covering Wiz founders (Assaf Rappaport, etc.), their backgrounds, key executives, and contact info from enrichment. Should not waste time on deep financials. Inline answer with relevant detail, may or may not produce a full .docx depending on depth.",
+      "files": []
+    },
+    {
+      "id": 3,
+      "prompt": "Check if there are any SEC filings for Stripe",
+      "expected_output": "Targeted EDGAR search for Stripe. Should find Form D filings and any other submissions. Inline summary of what was found, with key details (amounts raised, dates, exemption types). Light-touch response, no full report needed unless significant findings.",
+      "files": []
+    }
+  ]
+}
