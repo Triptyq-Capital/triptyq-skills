@@ -66,7 +66,7 @@ PitchBook is a critical source for VC due diligence — it has the most comprehe
 
 3. **PitchBook comparables**: Search for `"[sector/vertical] comparable transactions pitchbook.com"` to find relevant deal comps for valuation benchmarking.
 
-4. **If a PitchBook MCP or recipe becomes available**: Always check `RUBE_SEARCH_TOOLS` and `RUBE_FIND_RECIPE` for PitchBook integrations — they may be added at any time. If found, prefer the direct integration over web scraping.
+4. **PitchBook Premium connector**: Triptyq has PitchBook Premium connected at the organization level. Always check `RUBE_SEARCH_TOOLS` for PitchBook tools first — use the direct integration over web scraping whenever available. Search with `use_case: "search PitchBook for company data"` to discover available PitchBook-specific tools. The direct connector provides richer data (full funding history, investor networks, comparables, board/management profiles).
 
 ## Step 3: Execute Data Collection
 
