@@ -129,3 +129,29 @@ result, error = run_composio_tool('ONE_DRIVE_ONEDRIVE_UPLOAD_FILE', {
 - **French months**: The meeting folders use French month names. Use them.
 - **Don't restructure**: Follow existing conventions even if inconsistent. The team knows where things are.
 - **File immediately**: When the investment-memo or vc-due-diligence skill produces output, offer to file it before ending.
+
+
+## File Bridge: Cross-Sandbox Upload (April 2026)
+
+When Claude generates a file locally (docx, pdf) and needs to upload it to SharePoint, use the **File Bridge** recipe (`rcp_dIhYYIkp46B3`).
+
+### Workflow
+1. **Claude commits** the file to `staging/` in the `triptyq-skills` repo:
+   ```
+   base64-encode the file → GITHUB_CREATE_OR_UPDATE_FILE_CONTENTS
+   path: staging/<filename>
+   ```
+2. **Run the File Bridge recipe** with:
+   - `github_path`: `staging/<filename>`
+   - `sharepoint_folder`: target path (e.g., `/03_Occasions Invest/02_Deal Flow/110_Calder AI/From Triptyq`)
+   - `filename`: display name for SharePoint
+   - `mimetype`: file MIME type
+3. Recipe handles: GitHub download → S3 staging → SharePoint upload → GitHub cleanup
+
+### When to Use
+- After generating investment memos, tearsheets, or any documents via docx-js
+- After producing PDFs via LibreOffice conversion
+- Any time a file exists on Claude's machine and needs to reach SharePoint
+
+### File Size Limit
+GitHub Content API supports files up to ~100MB. For larger files, use manual drag-and-drop.
