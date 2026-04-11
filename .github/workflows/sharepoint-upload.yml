@@ -1,0 +1,49 @@
+name: SharePoint File Bridge
+
+on:
+  push:
+    paths:
+      - 'staging/**'
+    branches:
+      - main
+
+permissions:
+  contents: write  # needed to delete staging files after upload
+
+jobs:
+  upload-to-sharepoint:
+    runs-on: ubuntu-latest
+    if: "!contains(github.event.head_commit.message, '[cleanup]')"
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install dependencies
+        run: pip install requests
+
+      - name: Find and process staging manifests
+        env:
+          AZURE_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
+          AZURE_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
+          AZURE_CLIENT_SECRET: ${{ secrets.AZURE_CLIENT_SECRET }}
+          SHAREPOINT_DRIVE_ID: ${{ secrets.SHAREPOINT_DRIVE_ID }}
+        run: python .github/scripts/sharepoint-upload.py
+
+      - name: Clean up staging files
+        run: |
+          # Remove all processed staging directories
+          if [ -d "staging" ] && [ "$(ls -A staging 2>/dev/null)" ]; then
+            git config user.name "github-actions[bot]"
+            git config user.email "github-actions[bot]@users.noreply.github.com"
+            rm -rf staging/*/
+            # Keep staging/.gitkeep if it exists
+            git add -A staging/
+            git commit -m "chore: clean up staged files after SharePoint upload [cleanup]" || echo "Nothing to clean up"
+            git push
+          fi
