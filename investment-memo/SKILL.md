@@ -1,5 +1,5 @@
 ---
-name: investment-memo
+name: triptyq-investment-memo
 description: |
   Write Triptyq Capital investment memos with conviction-driven storytelling, Sid Lee-inspired design, and red brand identity. Use this skill whenever someone asks to write an investment memo, deal memo, IC memo, due diligence summary, or any investment recommendation document. Also triggers on "write up the deal", "memo for the partners", "document this opportunity", "prepare for IC", or when someone has gathered deal materials and needs to turn them into a decision document. This is the canonical way Triptyq writes investment memos — always use it, even for quick deal summaries or one-pagers.
 ---
