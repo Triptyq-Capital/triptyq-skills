@@ -85,35 +85,62 @@ Other/Pitchbook/
 3. **If no folder exists**: find the highest number in Deal Flow, create next sequential `[###]_[Company]/` with `From Co/` and `From Triptyq/` subfolders
 4. **Upload via Rube** using the OneDrive API with SharePoint drive_id (see Upload section below)
 
-## Automated Upload via Rube.app
+## Automated Upload via GitHub Actions File Bridge
 
-The Composio SharePoint connector has a tenant configuration issue (`invalid_resource`). The working approach uses the **OneDrive** connector with the SharePoint `drive_id` parameter:
+The File Bridge uses a GitHub Actions pipeline to upload files from Claude's sandbox to SharePoint via Microsoft Graph API. No third-party dependencies (Rube.app is deprecated May 15 2026).
 
 **SharePoint Drive ID (Documents Triptyq library):**
 `b!wPs8sWIq70Kt7RsL80wFKBqB2HWWzZdAnhoakfwfYIWRgc_-ZgmSTLpthkkQlSJu`
 
 **Pipeline:**
-1. Build or obtain the file in the Rube sandbox
-2. Stage via `upload_local_file()` to get an `s3key`
-3. Upload via `ONE_DRIVE_ONEDRIVE_UPLOAD_FILE` with:
-   - `drive_id`: the SharePoint drive ID above
-   - `folder`: the target path (e.g., `/03_Occasions Invest/02_Deal Flow/110_Calder AI/From Triptyq`)
-   - `file`: `{ name, mimetype, s3key }`
-   - `conflict_behavior`: `"replace"` to overwrite existing
+1. Build or obtain the file in Claude's sandbox (`/home/claude/`)
+2. Base64-encode the file
+3. Create a `manifest.json` with destination info
+4. Commit both to `staging/<uuid>/` in the triptyq-skills GitHub repo via API
+5. GitHub Action auto-triggers, decodes, authenticates via Azure AD, uploads to SharePoint
+6. Action cleans up staging files after upload
 
-**For PDF generation in the Rube sandbox:** Use `npm install puppeteer` + `pandoc` to convert docx → HTML → styled PDF with Triptyq branding.
-
-**Example:**
-```python
-res, err = upload_local_file("/home/user/memo.docx")
-s3key = res['s3key']
-result, error = run_composio_tool('ONE_DRIVE_ONEDRIVE_UPLOAD_FILE', {
-    'file': {'name': 'memo.docx', 'mimetype': 'application/vnd.openxmlformats-officedocument.wordprocessingml.document', 's3key': s3key},
-    'folder': '/03_Occasions Invest/02_Deal Flow/110_Calder AI/From Triptyq',
-    'drive_id': 'b!wPs8sWIq70Kt7RsL80wFKBqB2HWWzZdAnhoakfwfYIWRgc_-ZgmSTLpthkkQlSJu',
-    'conflict_behavior': 'replace'
-})
+**Manifest format:**
+```json
+{
+  "filename": "memo.docx",
+  "sharepoint_folder": "/03_Occasions Invest/02_Deal Flow/110_Calder AI/From Triptyq",
+  "encoding": "base64",
+  "conflict_behavior": "replace"
+}
 ```
+
+| Field | Required | Description |
+|---|---|---|
+| `filename` | Yes | Target filename on SharePoint |
+| `sharepoint_folder` | Yes | Full path within Documents Triptyq library |
+| `encoding` | No | `base64` (default) or `raw` |
+| `source_file` | No | Name of the data file (default: `file.b64`) |
+| `conflict_behavior` | No | `replace` (default), `rename`, or `fail` |
+
+**Example — upload from Claude's sandbox:**
+```bash
+# 1. Base64-encode the file
+base64 -w0 /home/claude/memo.docx > /tmp/file.b64
+
+# 2. Create manifest
+cat > /tmp/manifest.json << 'EOF'
+{
+  "filename": "Investment_Memo_Calder_AI.docx",
+  "sharepoint_folder": "/03_Occasions Invest/02_Deal Flow/110_Calder AI/From Triptyq",
+  "encoding": "base64",
+  "conflict_behavior": "replace"
+}
+EOF
+
+# 3. Commit to GitHub (use GITHUB_COMMIT_MULTIPLE_FILES via Rube or GitHub API)
+# UUID=$(python3 -c "import uuid; print(uuid.uuid4().hex[:8])")
+# Commit staging/<UUID>/manifest.json and staging/<UUID>/file.b64
+# The GitHub Action triggers automatically on push to staging/
+```
+
+**For PDF generation:** Use `pip install python-docx` + `pandoc` or `weasyprint` in Claude's sandbox.
+
 
 ## Creating a New Deal Folder
 
