@@ -1,0 +1,27 @@
+# Source-of-truth for the Sanctum Bridge SharePoint allowlist.
+#
+# The bridge fetches this file at startup and refreshes hourly; anything not
+# headed by one of these top-level segments is rejected with
+# `403 destination_not_allowed`. The list is permissive on purpose — it's the
+# anti-prompt-injection guard, not a fine-grained ACL. Folder-level access
+# policy lives in SharePoint itself.
+#
+# Edits land at `~/Projects/triptyq-skills/sharepoint-structure.yaml`; the
+# bridge reads via the symlink at `/opt/sanctum/bridge/sharepoint-structure.yaml`.
+allowed_roots:
+  # --- Existing document roots on the Triptyq Capital Fund I site ---
+  - Deal Flow            # deal pipeline
+  - PortCo               # portfolio companies
+  - LP Relationships     # LP communications + reporting
+  - Marcomm              # marketing & comms
+  - Daily Market Research
+  - General              # catch-all / team docs
+
+  # --- Spec-aligned aliases used by skills that prefer flat names ---
+  # The bridge will create these on first write; they coexist with the
+  # display-named folders above.
+  - Deals
+  - Portcos
+  - Fund Admin
+  - LP
+  - Internal
