@@ -1,0 +1,29 @@
+{
+  "name": "triptyq-skills",
+  "version": "0.1.0",
+  "description": "Triptyq Capital's internal Claude skills for VC workflows — investment memos, tearsheets, due diligence, LP updates, partners meeting prep, portfolio monitoring, and deal screening. Final artifacts upload to SharePoint via the Sanctum bridge.",
+  "author": {
+    "name": "Triptyq Capital",
+    "email": "bert@triptyq.vc"
+  },
+  "homepage": "https://github.com/Triptyq-Capital/triptyq-skills",
+  "repository": "https://github.com/Triptyq-Capital/triptyq-skills",
+  "license": "PROPRIETARY",
+  "keywords": [
+    "venture-capital",
+    "triptyq",
+    "investment-memo",
+    "due-diligence",
+    "sharepoint",
+    "sanctum-bridge"
+  ],
+  "skills": [
+    "./tearsheet-generator",
+    "./investment-memo",
+    "./vc-due-diligence",
+    "./lp-update-writer",
+    "./partners-meeting-prep",
+    "./portfolio-monitoring",
+    "./deal-screening"
+  ]
+}
