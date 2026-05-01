@@ -1,5 +1,9 @@
 # Changelog
 
+## v0.1.1 — 2026-05-01
+
+Plugin packaging fix. Skill folders moved from repo root into `skills/` subdirectory so Cowork's plugin auto-discovery finds them. Removed the unsupported `skills` array from `plugin.json` (only `commands`, `agents`, `hooks`, `mcpServers` are valid manifest path overrides). No skill content changes — same 7 skills as v0.1.0.
+
 ## v0.1.0 — 2026-04-29
 
 First packaged release. Migrates all Triptyq skills off Composio File Bridge onto the Sanctum bridge for SharePoint uploads.
